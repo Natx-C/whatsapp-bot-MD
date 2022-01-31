@@ -108,99 +108,25 @@ module.exports = async(sekha, skh) => {
 
         switch (command) {
 
-            // ISLAMI FEATURES
-            case 'jadwal': case 'jadwalsholat':
-                if (!q) return await reply(`Example : ${prefix + command} Jakarta`)
-				get_result = await fetchJson(`${apiUrl}/api/jadwalshalat?kota=${q}&apikey=${apikey}`)
-				get_result = get_result.result
-                txt = `*${get_result.kota}*\n\n`
-				txt += `Kota : ${get_result.kota}\n`
-				txt += `Tanggal : ${get_result.tanggal}\n`
-				txt += `Imsyak : ${get_result.imsyak}\n`
-				txt += `Subuh : ${get_result.subuh}\n`
-				txt += `Dzuhur : ${get_result.dzuhur}\n`
-                txt += `Ashar : ${get_result.ashar}\n`
-                txt += `Maghrib : ${get_result.maghrib}\n`
-                txt += `Isya : ${get_result.isya}`
-				reply(txt)
-			break
-            case 'listsurah':
-                get_result = await fetchJson(`${apiUrl}/api/quran?apikey=${apikey}`)
-                get_result = get_result.result
-                txt = `Berikut adalah List surah:\n\n`
-                for (var x in get_result) {
-                    txt += `${x}. ${get_result[x]}\n`
-                }
-                reply(txt)
-            break
-            case 'audiosurah':
-                if (!q) return await reply(`Example : ${prefix + command} 1`)
-                get_result = await getBuffer(`${apiUrl}/api/quran/audio/${q}?apikey=${apikey}`)
-                sekha.sendMessage(from, { audio: get_result }, { quoted: skh })
-            break
-            case 'audioayat':
-                if (!arg.split('|')) return reply(`Example: ${prefix + command} Nomor Surah | Ayat`)
-				const surat = q.substring(0, q.indexOf('|') - 1)
-				const ayat = q.substring(q.lastIndexOf('|') + 2)
-                get_result = await getBuffer(`${apiUrl}/api/quran/audio/${surat}/${ayat}?apikey=${apikey}`)
-                sekha.sendMessage(from, { audio: get_result }, { quoted: skh })
-            break
-            case 'adam': case 'idris': case 'nuh': case 'hud': case 'sholeh': case 'ibrahim': case 'luth': case 'ismail': case 'ishaq': case 'yaqub': case 'yusuf': case 'ayyub': case 'syuaib':
-            case 'musa': case 'harun': case 'dzulkifli': case 'daud': case 'sulaiman': case 'ilyas': case 'ilyasa': case 'yunus': case 'zakariya': case 'yahya': case 'isa': case 'muhammad':
-                get_result = await fetchJson(`${apiUrl}/api/kisahnabi/${command}?apikey=${apikey}`)
-                get_result = get_result.result
-                txt = `Nama : ${get_result.name}\n`
-                txt += `Lahir : ${get_result.lahir}\n`
-                txt += `Umur : ${get_result.age}\n\n`
-                txt += `Story : ${get_result.story}`
-                reply(txt)
-            break
-            case 'kisahmuslim':
-                get_result = await fetchJson(`${apiUrl}/api/kisahmuslim?apikey=${apikey}`)
-                get_result = get_result.result
-                txt = `Judul : ${get_result.Judul}\n\n`
-                txt += `Cerita : ${get_result.Cerita}\n`
-                ini_buffer = await getBuffer(get_result.Thumb)
-                sekha.sendMessage(from, { image: ini_buffer, caption: txt }, { quoted: skh })
-            break
-            case 'asmaul': case 'asmaulhusna':
-				get_result = await fetchJson(`${apiUrl}/api/asmaulhusna?apikey=${apikey}`)
-				get_result = get_result.result
-				txt = `index : ${get_result.index}\n`
-				txt += `latin : ${get_result.latin}\n`
-				txt += `arab : ${get_result.arabic}\n`
-				txt += `id : ${get_result.translation_id}\n`
-				txt += `en : ${get_result.translation_en}`
-				reply(txt)
-			break
-            case 'quran':
-				get_result = await fetchJson(`${apiUrl}/api/qurans?apikey=${apikey}`)
-				get_result = get_result.result
-				txt = `Surat : ${get_result.id.surat}\n`
-				txt += `Ayat : ${get_result.id.ayat}\n`
-				txt += `Teks : ${get_result.id.teks}\n\n`
-				txt += `Teks Ar : ${get_result.ar.teks}`
-				reply(txt)
-			break
-
-            // DOWNLOADER FEATURES
+            // MEDIA FEATURES
             case 'pinterest':
-                if (!q) return await reply(`Example : ${prefix + command} url`)
-                get_result = await fetchJson(`${apiUrl}/api/downloader/pinterestdl?url=${q}&apikey=${apikey}`)
-                get_buffer = await getBuffer(get_result.result)
-                sekha.sendMessage(from, { video: get_buffer }, { quoted: skh })
+                if(!q) return reply('gambar apa?')
+                let pin = await skh.pinterest(q)
+                let ha = pin[Math.floor(Math.random() * pin.length)]
+                let sil = await getBuffer(ha)
+                sekha.sendMessage(from, sil, image, {quoted: skh})
             break
             case 'tiktok':
                 if (!q) return await reply(`Example : ${prefix + command} url`)
-                get_result = await fetchJson(`${apiUrl}/api/downloader/musically?url=${q}&apikey=${apikey}`)
-                get_result = get_result.result.nowm
+                get_result = await fetchJson(`${apiUrl}/api/download/tiktok?url=${q}&apikey=${apikey}`)
+                get_result = get_result.result.nowatermark
                 get_buffer = await getBuffer(get_result)
                 sekha.sendMessage(from, { video: get_buffer }, { quoted: skh })
             break
             case 'tiktokaudio':
                 if (!q) return await reply(`Example : ${prefix + command} url`)
-                get_result = await fetchJson(`${apiUrl}/api/downloader/musically?url=${q}&apikey=${apikey}`)
-                get_result = get_result.result.audio_original
+                get_result = await fetchJson(`${apiUrl}/api/download/tiktok?url=${q}&apikey=${apikey}`)
+                get_result = get_result.result.audio
                 get_buffer = await getBuffer(get_result)
                 sekha.sendMessage(from, { audio: get_buffer }, { quoted: skh })
             break
@@ -217,86 +143,21 @@ module.exports = async(sekha, skh) => {
                 if (!q) return await reply(`Example : ${prefix + command} url`)
                 get_result = await fetchJson(`${apiUrl}/api/downloader/facebook?url=${q}&apikey=${apikey}`)
                 get_result = get_result.result
-                txt = `Facebook Downloader\n\n`
-                txt += `Title : ${get_result.title}`
+                txt = `Donasi Su`
+                txt += `https://saweria.co/inirey`
                 get_buffer = await getBuffer(get_result.url)
                 sekha.sendMessage(from, { video: get_buffer, caption: txt }, { quoted: skh })
             break
 
-            case 'joox':
-                if (!q) return await reply(`Example : ${prefix + command} judul`)
-                get_result = await fetchJson(`${apiUrl}/api/downloader/joox?query=${q}&apikey=${apikey}`)
-                get_result = get_result.result
-                get_buffer = await getBuffer(get_result.mp3Link)
-                sekha.sendMessage(from, { audio: get_buffer }, { quoted: skh })
-            break
-
-            case 'scdl': case 'soundcloud':
-                if (!q) return await reply(`Example : ${prefix + command} url`)
-                get_result = await fetchJson(`${apiUrl}/api/downloader/soundcloud?url=${q}&apikey=${apikey}`)
-                get_result = get_result.result
-                get_buffer = await getBuffer(get_result.url)
-                sekha.sendMessage(from, { audio: get_buffer }, { quoted: skh })
-            break
-
-            case 'xnxx': case 'xvideos':
-                if (!q) return await reply(`Example : ${prefix + command} url`)
-                get_result = await fetchJson(`${apiUrl}/api/downloader/${command}?url=${q}&apikey=${apikey}`)
-                get_result = get_result.result
-                txt = `Title : ${get_result.title}\n`
-                txt += `Duration : ${get_result.duration}\n`
-                get_buffer = await getBuffer(get_result.files.low)
-                sekha.sendMessage(from, { video: get_buffer, caption: txt  }, { quoted: skh })
-            break
-
-            case 'cocofun':
-                if (!q) return reply(`example : ${prefix + command} url`)
-                get_result = await fetchJson(`${apiUrl}/api/cocofun?url=${q}&apikey=${apikey}`)
-                get_result = get_result.result
-                txt = `Title : ${get_result.title}\n`
-                txt += `Desc : ${get_result.desc}\n`
-                txt += `Like : ${get_result.like}\n`
-                txt += `Play Count : ${get_result.play_count}`
-                get_buffer = await getBuffer(get_result.url)
-                sekha.sendMessage(from, { video: get_buffer, caption: txt  }, { quoted: skh })
-            break
-
-            case 'gore':
-                get_result = await fetchJson(`${apiUrl}/api/gore?apikey=${apikey}`)
-                get_result = get_result.result
-                txt = `Title : ${get_result.title}\n`
-                txt += `Tag : ${get_result.tag}`
-                get_buffer = await getBuffer(get_result.video1)
-                sekha.sendMessage(from, { video: get_buffer, caption: txt  }, { quoted: skh })
-            break
-
-            case 'tikporn':
-                get_result = await fetchJson(`${apiUrl}/api/tikporn?apikey=${apikey}`)
-                get_result = get_result.result
-                txt = `Title : ${get_result.title}\n`
-                txt += `Desc : ${get_result.desc}`
-                get_buffer = await getBuffer(get_result.video)
-                sekha.sendMessage(from, { video: get_buffer, caption: txt  }, { quoted: skh })
-            break
-
-            case 'hentaivid':
-                get_result = await fetchJson(`${apiUrl}/api/hentaivid?apikey=${apikey}`)
-                get_result = get_result.result
-                txt = `Title : ${get_result.title}\n`
-                txt += `Category : ${get_result.category}`
-                get_buffer = await getBuffer(get_result.video_1)
-                sekha.sendMessage(from, { video: get_buffer, caption: txt  }, { quoted: skh })
-            break
-
             // SOON
             
-            case 'motivasi': case 'dilanquote': case 'bucinquote': case 'katasenja': case 'puisi': {
-                let anu = await fetchJson(`${apiUrl}/api/${command}?apikey=${apikey}`)
+            case 'motivasi': case 'quote': case 'bucinquote': case 'katasenja': case 'puisi': {
+                let anu = await fetchJson(`${apiUrl}/api/random/katabijak?apikey=${apikey}`)
                 let buttons = [
                     { buttonId: prefix + command, buttonText: {displayText: 'Next'}, type: 1 }
                 ]
                 let buttonMessage = {
-                    text: anu.result.message,
+                    text: anu.result,
                     footer: 'Random ' + command,
                     buttons: buttons,
                     headerType: 2
@@ -306,8 +167,8 @@ module.exports = async(sekha, skh) => {
             break
 
             case 'anime': case 'waifu': case 'husbu': case 'neko': case 'shinobu': case 'megumin':
-                buffer = await getBuffer(`${apiUrl}/api/random/${command}?apikey=${apikey}`) 
-                sekha.sendMessage(from, { image: buffer, caption: 'Generate Random ' + command }, { quoted: skh })
+                buffer = await getBuffer(`${apiUrl}/api/wallpaper/${command}?apikey=${apikey}`) 
+                sekha.sendMessage(from, { image: buffer, caption: 'cakep ' + command }, { quoted: skh })
             break
 
         }
