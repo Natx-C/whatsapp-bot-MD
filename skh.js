@@ -62,11 +62,11 @@ module.exports = async(sekha, skh) => {
 		const q = args.join(' ')
 
         const botNumber = sekha.user.id.split(':')[0] + '@s.whatsapp.net'
-        const ownerNumber = ["62812XXXX@s.whatsapp.net"]
+        const ownerNumber = ["6285777451314@s.whatsapp.net"]
         const isGroup = from.endsWith('@g.us')
         const sender = isGroup ? (skh.key.participant ? skh.key.participant : skh.participant) : skh.key.remoteJid
         
-        const fullname =  skh.pushName || "SKH"
+        const fullname =  skh.pushName || "nat"
         const pushname = fullname.replace(/ .*/,'');
 
         const groupMetadata = isGroup ? await sekha.groupMetadata(from) : ''
@@ -121,14 +121,14 @@ module.exports = async(sekha, skh) => {
                 get_result = await fetchJson(`${apiUrl}/api/download/tiktok?url=${q}&apikey=${apikey}`)
                 get_result = get_result.result.nowatermark
                 get_buffer = await getBuffer(get_result)
-                sekha.sendMessage(from, { video: get_buffer }, { quoted: skh })
+                sekha.sendMessage(from, { video: get_buffer }, { quoted: nat })
             break
             case 'tiktokaudio':
                 if (!q) return await reply(`Example : ${prefix + command} url`)
                 get_result = await fetchJson(`${apiUrl}/api/download/tiktok?url=${q}&apikey=${apikey}`)
                 get_result = get_result.result.audio
                 get_buffer = await getBuffer(get_result)
-                sekha.sendMessage(from, { audio: get_buffer }, { quoted: skh })
+                sekha.sendMessage(from, { audio: get_buffer }, { quoted: nat })
             break
             case 'twitter':
                 if (!q) return await reply(`Example : ${prefix + command} url`)
@@ -137,14 +137,14 @@ module.exports = async(sekha, skh) => {
                 txt = `Twitter Downloader\n\n`
                 txt += `Desc : ${get_result.desc}`
                 get_buffer = await getBuffer(get_result.HD)
-                sekha.sendMessage(from, { video: get_buffer, caption: txt }, { quoted: skh })
+                sekha.sendMessage(from, { video: get_buffer, caption: txt }, { quoted: nat })
             break
             case 'facebook': case 'fb':
                 if (!q) return await reply(`Example : ${prefix + command} url`)
                 get_result = await fetchJson(`${apiUrl}/api/downloader/facebook?url=${q}&apikey=${apikey}`)
                 get_result = get_result.result
-                txt = `Donasi Su`
-                txt += `https://saweria.co/inirey`
+                txt = `Donasi banh`
+                txt += `081331815772 [TSEL]`
                 get_buffer = await getBuffer(get_result.url)
                 sekha.sendMessage(from, { video: get_buffer, caption: txt }, { quoted: skh })
             break
@@ -162,13 +162,13 @@ module.exports = async(sekha, skh) => {
                     buttons: buttons,
                     headerType: 2
                 }
-                sekha.sendMessage(from, buttonMessage, { quoted: skh })
+                sekha.sendMessage(from, buttonMessage, { quoted: nat })
             }
             break
 
             case 'anime': case 'waifu': case 'husbu': case 'neko': case 'shinobu': case 'megumin':
                 buffer = await getBuffer(`${apiUrl}/api/wallpaper/${command}?apikey=${apikey}`) 
-                sekha.sendMessage(from, { image: buffer, caption: 'cakep ' + command }, { quoted: skh })
+                sekha.sendMessage(from, { image: buffer, caption: 'cakep ' + command }, { quoted: nat })
             break
 
         }
